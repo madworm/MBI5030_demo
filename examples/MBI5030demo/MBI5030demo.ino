@@ -53,7 +53,7 @@ void setup(void) {
 void loop(void) {
   Serial.print("CHIP1 - LED error-status: ");
   Serial.println(chip1.read_error_report(),BIN);
-  Serial.print("CHIP 1 - config register: ");
+  Serial.print("CHIP1 - config register: ");
   Serial.println(chip1.read_config(),BIN);  
   Serial.print("CHIP2 - LED error-status: ");
   Serial.println(chip2.read_error_report(),BIN);
