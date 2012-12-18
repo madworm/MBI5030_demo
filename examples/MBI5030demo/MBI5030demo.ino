@@ -21,17 +21,17 @@
 #include <stdint.h>
 #include <MBI5030.h>
 
-#define USE_16BIT_PWM
+#define USE_12BIT_PWM
 
 #ifdef USE_16BIT_PWM
 #define BRIGHTNESS_MAX 65535
-#define BRIGHTNESS_STEPSIZE 128
+#define BRIGHTNESS_STEPSIZE 256
 #define FADE_DELAY 1
 #endif
 
 #ifdef USE_12BIT_PWM
 #define BRIGHTNESS_MAX 4095
-#define BRIGHTNESS_STEPSIZE 32
+#define BRIGHTNESS_STEPSIZE 64
 #define FADE_DELAY 1
 #endif
 
@@ -44,8 +44,8 @@ void setup(void) {
   memset(pwm_data,0x0000,sizeof(pwm_data));
   chip1.spi_init();
   chip2.spi_init();
-  chip1.write_config(0x0000,0x00); // 1st number: configuration bits, 2nd number: current gain
-  chip2.write_config(0x0000,0xFF);
+  chip1.write_config(0x0000 | PWM_12BIT, 0xFF); // 1st number: configuration bits (see header file of lib), 2nd number: current gain
+  chip2.write_config(0x0000 | PWM_12BIT, 0xFF);
   chip1.update(pwm_data);
   chip2.update(pwm_data);
 }
