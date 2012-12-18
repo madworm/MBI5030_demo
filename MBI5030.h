@@ -1,67 +1,54 @@
-#ifndef _MBI5030H_
-#define _MBI5030H_
+#ifndef _MBI5030_H_
+#define _MBI5030_H_
 
-#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328__)
-#define SPI_OUT_DIR DDRC
-#define SPI_OUT_PORT PORTC
-#define SPI_OUT_pin PC0
+extern "C" {
+	#include <stdint.h>
+}
 
-#define SPI_CLK_DIR DDRC
-#define SPI_CLK_PORT PORTC
-#define SPI_CLK_pin PC1
+class MBI5030 {
 
-#define SPI_LATCH_DIR DDRC
-#define SPI_LATCH_PORT PORTC
-#define SPI_LATCH_pin PC2
+	public:
+		MBI5030(uint8_t spi_out_pin, uint8_t spi_in_pin, uint8_t spi_clk_pin, uint8_t spi_latch_pin);
+		void spi_init(void);
+		void update(uint16_t * pwm_data);
+		uint16_t read_error_report(void);
+		uint16_t read_config(void);
+		void write_config(uint16_t config_mask, uint8_t current_gain);
+		
+	private:
+		volatile uint8_t * _spi_out_DIR;
+		volatile uint8_t * _spi_out_PORT;
+			 uint8_t   _spi_out_pinmask;
 
-#define SPI_IN_DIR DDRC
-#define SPI_IN_PORT PORTC
-#define SPI_IN_PIN PINC
-#define SPI_IN_pin PC3
-#else
-#error DOH! Needs ATmega168 or ATmega328
-#error SPI DATA OUT: analog pin 0
-#error SPI CLK     : analog pin 1
-#error SPI LATCH   : analog pin 2
-#error SPI DATA IN : analog pin 3
-#error Go and fix it yourself my friend!
-#endif
+		volatile uint8_t * _spi_in_DIR;
+		volatile uint8_t * _spi_in_PIN;
+			 uint8_t   _spi_in_pinmask;
 
-#define PWM_BUFFER_SIZE 16
+		volatile uint8_t * _spi_clk_DIR;
+		volatile uint8_t * _spi_clk_PORT;
+			 uint8_t   _spi_clk_pinmask;
 
-#ifdef USE_PWM_12BIT
-#define BRIGHTNESS_STEPSIZE 16
-#define BRIGHTNESS_MAX 4095	// 12bit PWM
-#define FADE_DELAY 2
-#endif
+		volatile uint8_t * _spi_latch_DIR;
+		volatile uint8_t * _spi_latch_PORT;
+			 uint8_t   _spi_latch_pinmask;
 
-#ifdef USE_PWM_16BIT
-#define BRIGHTNESS_STEPSIZE 128
-#define BRIGHTNESS_MAX 65535
-#define FADE_DELAY 1
-#endif
-
-// definitions of configuration bits of the MBI5030 config register
-// 1st lines: DEFAULT values
-#define PWM_16BIT                  0x0000
-#define PWM_12BIT                  0x2000
-
-// doesn't seem to work with my chip ;-(
-#define MISSING_GSCLK_SHUTDOWN_ON  0x0000
-#define MISSING_GSCLK_SHUTDOWN_OFF 0x0001
-
-// not tested yet
-#define THERMAL_I_LIMIT_OFF        0x0000
-#define THERMAL_I_LIMIT_ON         0x0002
-
-extern uint16_t pwm_buffer[PWM_BUFFER_SIZE];
-
-void spi_setup(void);
-void update_pwm(uint16_t * pwm_data);
-void enable_error_detection(void);
-void prepare_error_report(void);
-uint16_t read_register(void);
-void prepare_config_read(void);
-void write_config(uint16_t config_mask, uint8_t current_gain);
+		uint8_t _spi_out_pin;
+		uint8_t _spi_in_pin;
+		uint8_t _spi_clk_pin;
+		uint8_t _spi_latch_pin;
+		
+		inline void spi_clk_high(void) __attribute__((always_inline));
+		inline void spi_clk_low(void) __attribute__((always_inline));
+		inline void spi_out_high(void) __attribute__((always_inline));
+		inline void spi_out_low(void) __attribute__((always_inline));
+		inline void spi_latch_high(void) __attribute__((always_inline));
+		inline void spi_latch_low(void) __attribute__((always_inline));
+		inline void pulse_spi_clk(void) __attribute__((always_inline));
+		
+		void enable_error_detection(void);
+		void prepare_error_report(void);
+		uint16_t read_register(void);
+		void prepare_config_read(void);
+};
 
 #endif
