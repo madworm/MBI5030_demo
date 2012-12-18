@@ -1,3 +1,22 @@
+//
+// To get a suitably high GSCLK frequency, the CLKO-FUSE of the ATMega168/328 has been programmed
+// It will output it's system clock on PB0 ("digital pin" #8)
+//
+// Diecimila + ATmega168: lfuse: 0xBF
+//                        hfuse: 0xDD
+//                        efuse: 0x00 (or 0xF8)
+//
+// Uno + ATmega328:       lfuse: 0xBF
+//                        hfuse: 0xDE
+//                        efuse: 0x05 (or 0xFD)
+//                        
+// To revert to Arduino's default FUSE settings, change 0xBF to 0xFF.
+//
+// Use: "http://www.engbedded.com/fusecalc" and ".../arduino-XXX/hardware/arduino/boards.txt"
+//
+// Make sure to get the latest MBI5030 datasheet (at least version Jan. 2009)!
+// 
+
 #include <avr/io.h>
 #include <stdint.h>
 #include <MBI5030.h>
@@ -25,7 +44,7 @@ void setup(void) {
   memset(pwm_data,0x0000,sizeof(pwm_data));
   chip1.spi_init();
   chip2.spi_init();
-  chip1.write_config(0x0000,0x00);
+  chip1.write_config(0x0000,0x00); // 1st number: configuration bits, 2nd number: current gain
   chip2.write_config(0x0000,0xFF);
   chip1.update(pwm_data);
   chip2.update(pwm_data);
