@@ -45,8 +45,19 @@ void setup(void)
 	memset(pwm_data, 0x0000, sizeof(pwm_data));
 	chip1.spi_init();
 	chip2.spi_init();
-	chip1.write_config(0x0000 | PWM_12BIT, 0xFF);	// 1st number: configuration bits (see header file of lib), 2nd number: current gain
+
+	//
+	// The current-set resistor 'R-EXT' of the MBI5030 should be chosen such
+	// that the maximum current is only reached if the digital current gain
+	// is set to '2'. That way the chip should always operate within specs.
+	// 
+	// The chip starts up with a gain setting of '1', which means only half
+	// of the maximum current is available. Next we'll change the configuration
+	// register to get a gain of '2' for full brightness.
+	//
+	chip1.write_config(0x0000 | PWM_12BIT, 0xFF);	// 1st number: blank configuration bits (see header file of lib), 2nd number: current gain
 	chip2.write_config(0x0000 | PWM_12BIT, 0xFF);
+
 	chip1.update(pwm_data);
 	chip2.update(pwm_data);
 }
