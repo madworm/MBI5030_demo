@@ -116,7 +116,7 @@ uint16_t pwm_data[16];
 
 void setup(void)
 {
-	memset(pwm_data, 0x0000, sizeof(pwm_data));
+	memset(pwm_data, 0x00, sizeof(pwm_data)); // fill 32 bytes with 0s
 	chip1.spi_init();
 
 	//
