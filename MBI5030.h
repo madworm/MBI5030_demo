@@ -2,6 +2,8 @@
 // To get a suitably high GSCLK frequency, the CLKO-FUSE of the ATMega168/328 has been programmed
 // It will output it's system clock on PB0 ("digital pin" #8)
 //
+// THIS REQUIRES AN ISP PROGRAMMER (or 2nd Arduino loaded with Arduino-ISP)
+//
 // Diecimila + ATmega168: lfuse: 0xBF
 //                        hfuse: 0xDD
 //                        efuse: 0x00 (or 0xF8)
